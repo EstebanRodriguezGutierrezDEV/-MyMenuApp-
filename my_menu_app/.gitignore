@@ -64,3 +64,15 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+# Environment variables
+.env
+
+# Windows related
+windows/flutter/ephemeral/
+
+# Linux related
+linux/flutter/ephemeral/
+
+# macOS related
+macos/Flutter/ephemeral/
