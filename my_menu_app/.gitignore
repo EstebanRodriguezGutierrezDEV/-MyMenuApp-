@@ -76,3 +76,9 @@ linux/flutter/ephemeral/
 
 # macOS related
 macos/Flutter/ephemeral/
+
+# Firebase related
+**/android/app/google-services.json
+**/ios/Runner/GoogleService-Info.plist
+**/macos/Runner/GoogleService-Info.plist
+**/firebase_options.dart

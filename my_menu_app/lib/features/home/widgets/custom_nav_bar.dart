@@ -1,10 +1,20 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../../theme/app_colors.dart';
+import '../../auth/login_screen.dart';
+import '../../auth/signup_screen.dart';
+import '../../../shared/widgets/app_logo.dart';
 
 class CustomNavBar extends StatelessWidget {
-  const CustomNavBar({super.key});
+  final VoidCallback? onMenuTap;
+  final VoidCallback? onAboutTap;
+  final VoidCallback? onHowItWorksTap;
+
+  const CustomNavBar({
+    super.key,
+    this.onMenuTap,
+    this.onAboutTap,
+    this.onHowItWorksTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,49 +49,20 @@ class CustomNavBar extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: Container(
-                            margin: const EdgeInsets.only(right: 1),
-                            child: ShaderMask(
-                              shaderCallback: (bounds) => const LinearGradient(
-                                colors: [Colors.white, AppColors.primary],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ).createShader(bounds),
-                              child: Text(
-                                'M',
-                                style: GoogleFonts.stardosStencil(
-                                  fontSize: 32,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const TextSpan(
-                          text: 'yMenu',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
+                  const AppLogo(
+                    fontSize: 24,
+                    textColor: Colors.white,
+                    iconColor: Colors.white,
                   ),
                   // Responsive Navigation Items
                   if (MediaQuery.of(context).size.width > 800)
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        _buildNavItem('Menú'),
-                        _buildNavItem('Sobre Nosotros'),
-                        _buildNavItem('¿Cómo funciona?'),
-                        _buildNavItem('Contactanos'),
+                        _buildNavItem('Menú', onMenuTap),
+                        _buildNavItem('Sobre Nosotros', onAboutTap),
+                        _buildNavItem('¿Cómo funciona?', onHowItWorksTap),
+                        _buildNavItem('Contactanos', () {}),
                       ],
                     )
                   else
@@ -100,13 +81,40 @@ class CustomNavBar extends StatelessWidget {
                       child: PopupMenuButton<String>(
                         icon: const Icon(Icons.menu, color: Colors.white),
                         onSelected: (value) {
-                          debugPrint('Selected: $value');
+                          switch (value) {
+                            case 'Menú':
+                              onMenuTap?.call();
+                              break;
+                            case 'Sobre Nosotros':
+                              onAboutTap?.call();
+                              break;
+                            case '¿Cómo funciona?':
+                              onHowItWorksTap?.call();
+                              break;
+                            case 'Iniciar sesión':
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const LoginScreen(),
+                                ),
+                              );
+                              break;
+                            case 'Registrarse':
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const SignupScreen(),
+                                ),
+                              );
+                              break;
+                          }
                         },
                         itemBuilder: (BuildContext context) => [
                           _buildPopupMenuItem('Menú'),
                           _buildPopupMenuItem('Sobre Nosotros'),
                           _buildPopupMenuItem('¿Cómo funciona?'),
                           _buildPopupMenuItem('Contactanos'),
+                          const PopupMenuDivider(height: 16),
+                          _buildPopupMenuItem('Iniciar sesión'),
+                          _buildPopupMenuItem('Registrarse'),
                         ],
                       ),
                     ),
@@ -119,9 +127,9 @@ class CustomNavBar extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(String text) {
+  Widget _buildNavItem(String text, VoidCallback? onTap) {
     return TextButton(
-      onPressed: () {},
+      onPressed: onTap,
       style: TextButton.styleFrom(
         foregroundColor: Colors.white,
         textStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),

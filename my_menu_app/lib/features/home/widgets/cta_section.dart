@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../theme/app_colors.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../auth/signup_screen.dart';
 
 class CallToActionSection extends StatelessWidget {
   const CallToActionSection({super.key});
@@ -33,7 +34,11 @@ class CallToActionSection extends StatelessWidget {
           ),
           const SizedBox(height: 40),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const SignupScreen()),
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,

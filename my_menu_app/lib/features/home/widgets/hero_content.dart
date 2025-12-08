@@ -1,16 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../theme/app_colors.dart';
+import '../../../core/theme/app_colors.dart';
 import 'service_info.dart';
 import 'about_section.dart';
 import 'how_it_works_section.dart';
 import 'cta_section.dart';
 import 'footer_section.dart';
+import '../../auth/login_screen.dart';
+import '../../auth/signup_screen.dart';
 
 class HeroContent extends StatelessWidget {
   final Animation<double> animation;
+  final GlobalKey? homeKey;
+  final GlobalKey? aboutKey;
+  final GlobalKey? howItWorksKey;
 
-  const HeroContent({super.key, required this.animation});
+  const HeroContent({
+    super.key,
+    required this.animation,
+    this.homeKey,
+    this.aboutKey,
+    this.howItWorksKey,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +30,7 @@ class HeroContent extends StatelessWidget {
         child: Column(
           children: [
             Container(
+              key: homeKey,
               color: AppColors.background,
               padding: const EdgeInsets.fromLTRB(24, 120, 24, 40),
               child: LayoutBuilder(
@@ -70,7 +82,13 @@ class HeroContent extends StatelessWidget {
                     runSpacing: 16,
                     children: [
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const LoginScreen(),
+                            ),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           foregroundColor: Colors.white,
@@ -89,7 +107,13 @@ class HeroContent extends StatelessWidget {
                         child: const Text('Ver Menú'),
                       ),
                       OutlinedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const SignupScreen(),
+                            ),
+                          );
+                        },
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppColors.primary,
                           padding: const EdgeInsets.symmetric(
@@ -202,8 +226,8 @@ class HeroContent extends StatelessWidget {
                 },
               ),
             ),
-            AboutSection(animation: animation),
-            const HowItWorksSection(),
+            AboutSection(key: aboutKey, animation: animation),
+            HowItWorksSection(key: howItWorksKey),
             const CallToActionSection(),
             const FooterSection(),
           ],
