@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../shared/widgets/app_logo.dart';
 import '../auth/login_screen.dart';
+import 'edit_profile_screen.dart';
+import 'user_preferences_screen.dart';
+import 'my_fridge_screen.dart';
+import 'my_recipes_screen.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -31,12 +34,14 @@ class _UserScreenState extends State<UserScreen> {
     try {
       _user = _authService.currentUser;
       if (_user != null) {
-        DocumentSnapshot doc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(_user!.uid)
-            .get();
-        if (doc.exists) {
-          _userData = doc.data() as Map<String, dynamic>?;
+        final data = await Supabase.instance.client
+            .from('profiles')
+            .select()
+            .eq('id', _user!.id)
+            .maybeSingle();
+
+        if (data != null) {
+          _userData = data;
         }
       }
     } catch (e) {
@@ -148,20 +153,25 @@ class _UserScreenState extends State<UserScreen> {
                               width: 2,
                             ),
                           ),
-                          child: const CircleAvatar(
+                          child: CircleAvatar(
                             radius: 40,
                             backgroundColor: Colors.white,
-                            child: Icon(
-                              Icons.person,
-                              size: 40,
-                              color: AppColors.primary,
-                            ),
+                            backgroundImage: _userData?['avatar_url'] != null
+                                ? NetworkImage(_userData!['avatar_url'])
+                                : null,
+                            child: _userData?['avatar_url'] == null
+                                ? const Icon(
+                                    Icons.person,
+                                    size: 40,
+                                    color: AppColors.primary,
+                                  )
+                                : null,
                           ),
                         ),
                         const SizedBox(height: 16),
                         // Name
                         Text(
-                          _userData?['fullName'] ?? 'Usuario',
+                          _userData?['full_name'] ?? 'Usuario',
                           style: GoogleFonts.outfit(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -186,42 +196,84 @@ class _UserScreenState extends State<UserScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Column(
                       children: [
-                        // Info Card
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildInfoRow(
-                                icon: Icons.person_outline,
-                                label: 'Nombre',
-                                value: _userData?['fullName'] ?? '-',
+                        // Grid Menu Options
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildGridOption(
+                                context,
+                                icon: Icons.kitchen_outlined,
+                                title: 'Mi Nevera',
+                                subtitle: 'Gestiona stock',
+                                color: const Color(0xFF64B5F6), // Light Blue
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const MyFridgeScreen(),
+                                  ),
+                                ),
                               ),
-                              const Divider(height: 32),
-                              _buildInfoRow(
-                                icon: Icons.email_outlined,
-                                label: 'Email',
-                                value:
-                                    _userData?['email'] ?? _user?.email ?? '-',
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: _buildGridOption(
+                                context,
+                                icon: Icons.menu_book_outlined,
+                                title: 'Mis Recetas',
+                                subtitle: 'Tus creaciones',
+                                color: const Color(0xFFAED581), // Light Green
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const MyRecipesScreen(),
+                                  ),
+                                ),
                               ),
-                              const Divider(height: 32),
-                              _buildInfoRow(
-                                icon: Icons.calendar_today_outlined,
-                                label: 'Miembro desde',
-                                value: _userData?['createdAt'] != null
-                                    ? (_userData!['createdAt'] as Timestamp)
-                                          .toDate()
-                                          .toString()
-                                          .split(' ')[0]
-                                    : '-',
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildGridOption(
+                                context,
+                                icon: Icons.edit_outlined,
+                                title: 'Editar Perfil',
+                                subtitle: 'Datos personales',
+                                color: const Color(0xFFFFB74D), // Orange
+                                onTap: () async {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const EditProfileScreen(),
+                                    ),
+                                  );
+                                  _fetchUserData();
+                                },
                               ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: _buildGridOption(
+                                context,
+                                icon: Icons.settings_outlined,
+                                title: 'Preferencias',
+                                subtitle: 'Configuración',
+                                color: const Color(0xFF90A4AE), // Blue Grey
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const UserPreferencesScreen(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 32),
 
@@ -256,33 +308,61 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
-  Widget _buildInfoRow({
+  Widget _buildGridOption(
+    BuildContext context, {
     required IconData icon,
-    required String label,
-    required String value,
+    required String title,
+    required String subtitle,
+    required Color color,
+    required VoidCallback onTap,
   }) {
-    return Row(
-      children: [
-        Icon(icon, color: AppColors.primary, size: 24),
-        const SizedBox(width: 16),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[600]),
-            ),
-            Text(
-              value,
-              style: GoogleFonts.inter(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.black87,
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(20),
+      elevation: 4,
+      shadowColor: Colors.black.withOpacity(0.05),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.grey.withOpacity(0.05)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(icon, color: color, size: 28),
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              Text(
+                title,
+                style: GoogleFonts.outfit(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF1A313A),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  color: Colors.grey[500],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
         ),
-      ],
+      ),
     );
   }
 }

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'features/home/home_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'features/shopping/providers/shopping_list_provider.dart';
-import 'firebase_options.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Initialize Supabase
+  await Supabase.initialize(
+    url: 'https://bbqahmiuxvlfagcmhxpm.supabase.co',
+    anonKey: 'sb_publishable_itNwY8ZlDV-5BqnBmHxEPw_JX4Y5GOq',
+  );
+
   runApp(const MainApp());
 }
 
