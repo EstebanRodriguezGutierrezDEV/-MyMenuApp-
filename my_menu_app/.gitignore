@@ -83,3 +83,30 @@ macos/Flutter/ephemeral/
 **/ios/Runner/GoogleService-Info.plist
 **/macos/Runner/GoogleService-Info.plist
 **/firebase_options.dart
+
+# Comprehensive System & Tooling Ignores
+# Windows
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# Additional Editor Configs
+*.sublime-workspace
+*.sublime-project
+
+# Logs and Databases
+*.log
+*.sqlite
+
+# Local Analysis & Temp Files
+analysis_options.yaml
+analysis_output.txt
+analysis.json
+analysis.txt
+analysis_log.txt
+*.tmp
+*.bak
+
