@@ -13,6 +13,8 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^6.3.3
+  pdf: ^3.11.3
+  printing: ^5.14.2
   provider: ^6.1.5+1
 
 dev_dependencies:

@@ -28,6 +28,7 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
 import '../models/recipe_model.dart';
+import 'package:provider/provider.dart';
+import '../../shopping/providers/shopping_list_provider.dart';
 
 class SocialRecipePost extends StatefulWidget {
   final Recipe recipe;
@@ -184,13 +186,54 @@ class _SocialRecipePostState extends State<SocialRecipePost> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Ingredientes',
-                    style: GoogleFonts.outfit(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: AppColors.primary,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Ingredientes',
+                        style: GoogleFonts.outfit(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          context.read<ShoppingListProvider>().addItems(
+                            widget.recipe.ingredients,
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                '${widget.recipe.title} añadida a tu lista!',
+                              ),
+                              backgroundColor: AppColors.primary,
+                              behavior: SnackBarBehavior.floating,
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.playlist_add,
+                          size: 18,
+                          color: AppColors.primary,
+                        ),
+                        label: Text(
+                          'Añadir',
+                          style: GoogleFonts.inter(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 8),
                   ...widget.recipe.ingredients.map(

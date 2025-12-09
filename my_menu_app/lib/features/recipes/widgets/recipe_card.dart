@@ -134,7 +134,7 @@ class RecipeCard extends StatelessWidget {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: AppColors.accent,
                           foregroundColor: Colors.white,
                           padding: EdgeInsets.zero,
                           shape: RoundedRectangleBorder(

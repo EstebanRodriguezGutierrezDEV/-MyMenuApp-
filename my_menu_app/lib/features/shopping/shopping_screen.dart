@@ -3,6 +3,9 @@ import '../../core/theme/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'providers/shopping_list_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class ShoppingScreen extends StatefulWidget {
   const ShoppingScreen({super.key});
@@ -19,6 +22,134 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       context.read<ShoppingListProvider>().addItem(_itemController.text);
       _itemController.clear();
     }
+  }
+
+  Future<void> _generatePdf(BuildContext context) async {
+    final pdf = pw.Document();
+    final items = context.read<ShoppingListProvider>().shoppingList;
+
+    // Load Fonts
+    final fontStencil = await PdfGoogleFonts.stardosStencilBold();
+    final fontOutfit = await PdfGoogleFonts.outfitBold();
+    final fontBody = await PdfGoogleFonts.interRegular();
+
+    // Define Colors
+    final primaryColor = PdfColor.fromInt(AppColors.primary.value);
+    final accentColor = PdfColor.fromInt(AppColors.accent.value);
+    final textColor = PdfColor.fromInt(AppColors.text.value);
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context pwContext) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              // Header with Logo
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.RichText(
+                    text: pw.TextSpan(
+                      children: [
+                        pw.TextSpan(
+                          text: 'M',
+                          style: pw.TextStyle(
+                            font: fontStencil,
+                            fontSize: 32,
+                            color: primaryColor,
+                          ),
+                        ),
+                        pw.TextSpan(
+                          text: 'yMenu',
+                          style: pw.TextStyle(
+                            font: fontOutfit,
+                            fontSize: 26,
+                            color: primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  pw.Text(
+                    'Lista de Compra',
+                    style: pw.TextStyle(
+                      font: fontOutfit,
+                      fontSize: 24,
+                      color: textColor,
+                    ),
+                  ),
+                ],
+              ),
+              pw.SizedBox(height: 10),
+              pw.Divider(color: accentColor, thickness: 2),
+              pw.SizedBox(height: 20),
+
+              // Items List
+              ...items.map(
+                (item) => pw.Container(
+                  margin: const pw.EdgeInsets.only(bottom: 10),
+                  child: pw.Row(
+                    children: [
+                      // Checkbox visual
+                      pw.Container(
+                        width: 14,
+                        height: 14,
+                        decoration: pw.BoxDecoration(
+                          border: pw.Border.all(color: primaryColor, width: 2),
+                          borderRadius: pw.BorderRadius.circular(2),
+                        ),
+                      ),
+                      pw.SizedBox(width: 12),
+                      pw.Expanded(
+                        child: pw.Text(
+                          item,
+                          style: pw.TextStyle(
+                            font: fontBody,
+                            fontSize: 16,
+                            color: textColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              pw.Spacer(),
+
+              // Footer
+              pw.Divider(color: PdfColors.grey300),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text(
+                    'Generado por MyMenu',
+                    style: pw.TextStyle(
+                      font: fontBody,
+                      fontSize: 10,
+                      color: PdfColors.grey600,
+                    ),
+                  ),
+                  pw.Text(
+                    DateTime.now().toString().split('.')[0],
+                    style: pw.TextStyle(
+                      font: fontBody,
+                      fontSize: 10,
+                      color: PdfColors.grey600,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+    );
   }
 
   @override
@@ -80,14 +211,12 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               children: [
                 // PDF Button
                 ElevatedButton.icon(
-                  onPressed: () {
-                    // PDF functionality placeholder
-                  },
+                  onPressed: () => _generatePdf(context),
                   icon: const Icon(Icons.picture_as_pdf, size: 18),
                   label: const Text('PDF'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF1A313A),
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
                     elevation: 2,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
