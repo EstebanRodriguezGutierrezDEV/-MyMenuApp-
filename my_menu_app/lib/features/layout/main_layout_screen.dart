@@ -5,6 +5,7 @@ import '../recipes/recipes_screen.dart';
 import '../recipes/new_recipes_screen.dart';
 import '../shopping/shopping_screen.dart';
 import '../user/user_screen.dart';
+import '../posts/add_post_screen.dart';
 
 class MainLayoutScreen extends StatefulWidget {
   const MainLayoutScreen({super.key});
@@ -19,6 +20,7 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
   final List<Widget> _screens = [
     const RecipesScreen(),
     const NewRecipesScreen(),
+    const SizedBox(), // Dummy widget for the Add button
     const ShoppingScreen(),
     const UserScreen(),
   ];
@@ -26,6 +28,19 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddPostScreen()),
+          );
+        },
+        backgroundColor: AppColors.primary,
+        elevation: 4,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add, color: Colors.white, size: 28),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -40,9 +55,12 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
+            // Index 2 is the space for FAB, so we don't switch to it
+            if (index != 2) {
+              setState(() {
+                _currentIndex = index;
+              });
+            }
           },
           type: BottomNavigationBarType.fixed,
           backgroundColor: const Color(0xFF1A313A),
@@ -58,7 +76,7 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
             fontSize: 12,
           ),
           elevation: 0,
-          items: const [
+          items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.book_outlined),
               activeIcon: Icon(Icons.book),
@@ -68,6 +86,10 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
               icon: Icon(Icons.explore_outlined),
               activeIcon: Icon(Icons.explore),
               label: 'Nuevas',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add, color: Colors.transparent),
+              label: '',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart_outlined),

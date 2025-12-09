@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'data/recipes_data.dart';
+import 'widgets/social_recipe_post.dart';
 
 class RecipesScreen extends StatelessWidget {
   const RecipesScreen({super.key});
@@ -51,12 +53,36 @@ class RecipesScreen extends StatelessWidget {
             ),
           ),
 
+          // Social Feed
           Expanded(
-            child: Center(
-              child: Text(
-                'Próximamente: Tus Recetas',
-                style: GoogleFonts.inter(color: Colors.grey),
-              ),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: feedRecipes.length,
+              itemBuilder: (context, index) {
+                // Mock data cycle
+                final users = [
+                  {
+                    'name': 'Ana Cocina',
+                    'img': 'https://i.pravatar.cc/150?u=ana',
+                  },
+                  {
+                    'name': 'Green Foodie',
+                    'img': 'https://i.pravatar.cc/150?u=green',
+                  },
+                  {
+                    'name': 'Carlos Cooks',
+                    'img': 'https://i.pravatar.cc/150?u=carlos',
+                  },
+                ];
+                final user = users[index % users.length];
+
+                return SocialRecipePost(
+                  recipe: feedRecipes[index],
+                  username: user['name']!,
+                  userAvatarUrl: user['img']!,
+                  initialLikes: (index * 33) % 500 + 10,
+                );
+              },
             ),
           ),
         ],

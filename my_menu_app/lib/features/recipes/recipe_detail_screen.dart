@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
-import 'recipe_model.dart';
+import 'models/recipe_model.dart';
+import 'package:provider/provider.dart';
+import '../shopping/providers/shopping_list_provider.dart';
 
 class RecipeDetailScreen extends StatelessWidget {
   final Recipe recipe;
@@ -182,6 +184,7 @@ class RecipeDetailScreen extends StatelessWidget {
           height: 56,
           child: ElevatedButton(
             onPressed: () {
+              context.read<ShoppingListProvider>().addItems(recipe.ingredients);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('${recipe.title} añadida a tu lista!'),

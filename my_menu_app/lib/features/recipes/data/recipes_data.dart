@@ -1,22 +1,6 @@
-class Recipe {
-  final String title;
-  final String imageUrl;
-  final String difficulty;
-  final String time;
-  final String description;
-  final String calories;
-  final List<String> ingredients;
-
-  Recipe({
-    required this.title,
-    required this.imageUrl,
-    required this.difficulty,
-    required this.time,
-    required this.description,
-    required this.calories,
-    required this.ingredients,
-  });
-}
+import '../models/recipe_model.dart';
+// Note: We need to import the class definition, but it is now in a different folder.
+// However, since we are moving this to lib/features/recipes/data/, and the model is in lib/features/recipes/models/
 
 final List<Recipe> newRecipes = [
   Recipe(
@@ -417,6 +401,77 @@ final List<Recipe> newRecipes = [
       'Aguacate',
       'Edamame',
       'Salsa de soja y sésamo',
+    ],
+  ),
+];
+
+final List<Recipe> feedRecipes = [
+  Recipe(
+    title: 'Pasta Carbonara Auténtica',
+    imageUrl:
+        'https://images.unsplash.com/photo-1612874742237-6526221588e3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+    difficulty: 'Medio',
+    time: '30 min',
+    description:
+        'La verdadera receta romana con guanciale, pecorino, yemas de huevo y mucha pimienta negra.',
+    calories: '650 kcal',
+    ingredients: [
+      '300g Spaghetti',
+      '150g Guanciale',
+      '4 Yemas de huevo',
+      '100g Pecorino Romano',
+      'Pimienta negra recién molida',
+    ],
+  ),
+  Recipe(
+    title: 'Ensalada Griega Fresca',
+    imageUrl:
+        'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+    difficulty: 'Fácil',
+    time: '15 min',
+    description:
+        'Una ensalada ligera y saludable con pepino, tomate, aceitunas kalamata y queso feta.',
+    calories: '300 kcal',
+    ingredients: [
+      '2 Tomates maduros',
+      '1 Pepino',
+      '100g Queso Feta',
+      'Aceitunas Kalamata',
+      'Orégano y Aceite de Oliva',
+    ],
+  ),
+  Recipe(
+    title: 'Smoothie Verde Detox',
+    imageUrl:
+        'https://images.unsplash.com/photo-1610970881699-44a5587cabec?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+    difficulty: 'Fácil',
+    time: '5 min',
+    description:
+        'Empieza el día con energía con este batido de espinacas, manzana y jengibre.',
+    calories: '180 kcal',
+    ingredients: [
+      '1 Manzana verde',
+      '1 taza Espinacas',
+      '1 trozo Jengibre',
+      '1/2 Pepino',
+      'Agua de coco',
+    ],
+  ),
+  Recipe(
+    title: 'Tarta de Manzana Casera',
+    imageUrl:
+        'https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+    difficulty: 'Medio',
+    time: '60 min',
+    description:
+        'La clásica tarta de la abuela con base crujiente y relleno de manzana con canela.',
+    calories: '400 kcal',
+    ingredients: [
+      'Masa quebrada',
+      '4 Manzanas Golden',
+      'Canela en polvo',
+      'Azúcar moreno',
+      'Mantequilla',
     ],
   ),
 ];

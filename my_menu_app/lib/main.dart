@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'features/home/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'features/shopping/providers/shopping_list_provider.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -14,10 +16,13 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'MyMenu',
-      theme: ThemeData(scaffoldBackgroundColor: const Color(0xFFF9F9F5)),
-      home: const HomeScreen(),
+    return ChangeNotifierProvider(
+      create: (context) => ShoppingListProvider(),
+      child: MaterialApp(
+        title: 'MyMenu',
+        theme: ThemeData(scaffoldBackgroundColor: const Color(0xFFF9F9F5)),
+        home: const HomeScreen(),
+      ),
     );
   }
 }
