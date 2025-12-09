@@ -3,14 +3,16 @@ import 'features/home/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'features/shopping/providers/shopping_list_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
 
   // Initialize Supabase
   await Supabase.initialize(
-    url: 'https://bbqahmiuxvlfagcmhxpm.supabase.co',
-    anonKey: 'sb_publishable_itNwY8ZlDV-5BqnBmHxEPw_JX4Y5GOq',
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
   runApp(const MainApp());

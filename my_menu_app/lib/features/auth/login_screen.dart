@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'signup_screen.dart';
 import 'widgets/auth_text_field.dart';
@@ -22,11 +23,20 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
 
   Future<void> _handleLogin() async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty ||
+        !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor ingresa un email válido')),
+      );
+      return;
+    }
+
     setState(() => _isLoading = true);
 
     try {
       await _authService.signIn(
-        email: _emailController.text,
+        email: email,
         password: _passwordController.text,
       );
       if (mounted) {
@@ -36,11 +46,22 @@ class _LoginScreenState extends State<LoginScreen> {
           (route) => false,
         );
       }
+    } on AuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Error de autenticación: ${e.message} (Code: ${e.statusCode})',
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Error al iniciar sesión: $e')));
+        ).showSnackBar(SnackBar(content: Text('Error inesperado: $e')));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);

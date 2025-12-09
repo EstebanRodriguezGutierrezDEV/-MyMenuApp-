@@ -66,6 +66,7 @@ app.*.symbols
 app.*.map.json
 
 # Environment variables
+# Environment variables
 .env
 
 # Windows related

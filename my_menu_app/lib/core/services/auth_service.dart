@@ -124,4 +124,41 @@ class AuthService {
       rethrow;
     }
   }
+
+  // Get User Preferences
+  Future<Map<String, dynamic>?> getUserPreferences() async {
+    final user = currentUser;
+    if (user == null) return null;
+
+    try {
+      final response = await _supabase
+          .from('profiles')
+          .select('allergies, intolerances')
+          .eq('id', user.id)
+          .maybeSingle();
+
+      return response;
+    } catch (e) {
+      print('DEBUG: Error fetching preferences: $e');
+      return null;
+    }
+  }
+
+  // Update User Preferences
+  Future<void> updateUserPreferences({
+    required List<String> allergies,
+    required List<String> intolerances,
+  }) async {
+    final user = currentUser;
+    if (user != null) {
+      await _supabase
+          .from('profiles')
+          .update({
+            'allergies': allergies,
+            'intolerances': intolerances,
+            'updated_at': DateTime.now().toIso8601String(),
+          })
+          .eq('id', user.id);
+    }
+  }
 }
