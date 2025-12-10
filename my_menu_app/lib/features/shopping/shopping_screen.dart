@@ -17,6 +17,15 @@ class ShoppingScreen extends StatefulWidget {
 class _ShoppingScreenState extends State<ShoppingScreen> {
   final TextEditingController _itemController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    // Fetch items when screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ShoppingListProvider>().fetchItems();
+    });
+  }
+
   void _addItem() {
     if (_itemController.text.isNotEmpty) {
       context.read<ShoppingListProvider>().addItem(_itemController.text);
@@ -98,16 +107,20 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                         decoration: pw.BoxDecoration(
                           border: pw.Border.all(color: primaryColor, width: 2),
                           borderRadius: pw.BorderRadius.circular(2),
+                          color: item.isChecked ? primaryColor : null,
                         ),
                       ),
                       pw.SizedBox(width: 12),
                       pw.Expanded(
                         child: pw.Text(
-                          item,
+                          item.name,
                           style: pw.TextStyle(
                             font: fontBody,
                             fontSize: 16,
                             color: textColor,
+                            decoration: item.isChecked
+                                ? pw.TextDecoration.lineThrough
+                                : null,
                           ),
                         ),
                       ),
@@ -278,6 +291,10 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
           Expanded(
             child: Consumer<ShoppingListProvider>(
               builder: (context, provider, child) {
+                if (provider.isLoading && provider.shoppingList.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
                 if (provider.shoppingList.isEmpty) {
                   return Center(
                     child: Column(
@@ -304,26 +321,38 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: provider.shoppingList.length,
                   itemBuilder: (context, index) {
+                    final item = provider.shoppingList[index];
                     return Card(
                       margin: const EdgeInsets.only(bottom: 8),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: ListTile(
-                        leading: const Icon(
-                          Icons.check_circle_outline,
-                          color: Colors.grey,
+                        onTap: () => provider.toggleItem(item.id),
+                        leading: Icon(
+                          item.isChecked
+                              ? Icons.check_circle
+                              : Icons.circle_outlined,
+                          color: item.isChecked ? Colors.green : Colors.grey,
                         ),
                         title: Text(
-                          provider.shoppingList[index],
-                          style: GoogleFonts.inter(fontSize: 16),
+                          item.name,
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            decoration: item.isChecked
+                                ? TextDecoration.lineThrough
+                                : null,
+                            color: item.isChecked
+                                ? Colors.grey
+                                : AppColors.text,
+                          ),
                         ),
                         trailing: IconButton(
                           icon: const Icon(
                             Icons.delete_outline,
                             color: Colors.red,
                           ),
-                          onPressed: () => provider.removeItem(index),
+                          onPressed: () => provider.deleteItem(item.id),
                         ),
                       ),
                     );

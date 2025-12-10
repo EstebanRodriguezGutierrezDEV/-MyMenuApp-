@@ -5,6 +5,7 @@ import '../recipes/recipes_screen.dart';
 import '../shopping/shopping_screen.dart';
 import '../user/user_screen.dart';
 import '../recipes/upload_recipe_screen.dart';
+import '../user/my_fridge_screen.dart';
 
 class MainLayoutScreen extends StatefulWidget {
   const MainLayoutScreen({super.key});
@@ -18,6 +19,7 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
 
   final List<Widget> _screens = [
     const RecipesScreen(),
+    const MyFridgeScreen(),
     const SizedBox(), // Dummy widget for the Add button
     const ShoppingScreen(),
     const UserScreen(),
@@ -40,7 +42,7 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
         child: const Icon(Icons.add, color: Colors.white, size: 28),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: IndexedStack(index: _currentIndex, children: _screens),
+      body: _screens[_currentIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           boxShadow: [
@@ -54,17 +56,15 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (index) {
-            // Index 1 is the space for FAB, so we don't switch to it
-            // Adjust index logic for removed item
-            if (index == 2) {
-              // Compra
-              setState(() => _currentIndex = 2);
-            } else if (index == 3) {
-              // Mi Cuenta
-              setState(() => _currentIndex = 3);
-            } else if (index == 0) {
-              // Recetas
+            // Index 2 is the space for FAB, so we don't switch to it
+            if (index == 0) {
               setState(() => _currentIndex = 0);
+            } else if (index == 1) {
+              setState(() => _currentIndex = 1);
+            } else if (index == 3) {
+              setState(() => _currentIndex = 3);
+            } else if (index == 4) {
+              setState(() => _currentIndex = 4);
             }
           },
           type: BottomNavigationBarType.fixed,
@@ -74,11 +74,11 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
           showUnselectedLabels: true,
           selectedLabelStyle: GoogleFonts.inter(
             fontWeight: FontWeight.w600,
-            fontSize: 12,
+            fontSize: 10,
           ),
           unselectedLabelStyle: GoogleFonts.inter(
             fontWeight: FontWeight.w400,
-            fontSize: 12,
+            fontSize: 10,
           ),
           elevation: 0,
           items: [
@@ -86,6 +86,11 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
               icon: Icon(Icons.book_outlined),
               activeIcon: Icon(Icons.book),
               label: 'Recetas',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.kitchen_outlined),
+              activeIcon: Icon(Icons.kitchen),
+              label: 'Nevera',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.add, color: Colors.transparent),

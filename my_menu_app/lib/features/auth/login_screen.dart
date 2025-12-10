@@ -32,14 +32,19 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
+    debugPrint('Step 1: Starting login process');
     setState(() => _isLoading = true);
 
     try {
+      debugPrint('Step 2: Calling authService.signIn');
       await _authService.signIn(
         email: email,
         password: _passwordController.text,
       );
+      debugPrint('Step 3: SignIn successful');
+
       if (mounted) {
+        debugPrint('Step 4: Navigating to MainLayoutScreen');
         // Navigate to MainLayoutScreen on success
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const MainLayoutScreen()),
@@ -47,6 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } on AuthException catch (e) {
+      debugPrint('AuthException: ${e.message}');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -58,12 +64,14 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } catch (e) {
+      debugPrint('Unexpected Error: $e');
       if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Error inesperado: $e')));
       }
     } finally {
+      debugPrint('Step 5: Finally block executed');
       if (mounted) setState(() => _isLoading = false);
     }
   }

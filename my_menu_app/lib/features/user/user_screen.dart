@@ -7,8 +7,9 @@ import '../../shared/widgets/app_logo.dart';
 import '../auth/login_screen.dart';
 import 'edit_profile_screen.dart';
 import 'user_preferences_screen.dart';
-import 'my_fridge_screen.dart';
+
 import 'my_recipes_screen.dart';
+import '../planner/planner_screen.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -203,23 +204,6 @@ class _UserScreenState extends State<UserScreen> {
                             Expanded(
                               child: _buildGridOption(
                                 context,
-                                icon: Icons.kitchen_outlined,
-                                title: 'Mi Nevera',
-                                subtitle: 'Gestiona stock',
-                                color: const Color(0xFF64B5F6), // Light Blue
-                                onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const MyFridgeScreen(),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: _buildGridOption(
-                                context,
                                 icon: Icons.menu_book_outlined,
                                 title: 'Mis Recetas',
                                 subtitle: 'Tus creaciones',
@@ -233,11 +217,7 @@ class _UserScreenState extends State<UserScreen> {
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
+                            const SizedBox(width: 16),
                             Expanded(
                               child: _buildGridOption(
                                 context,
@@ -257,7 +237,13 @@ class _UserScreenState extends State<UserScreen> {
                                 },
                               ),
                             ),
-                            const SizedBox(width: 16),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
                             Expanded(
                               child: _buildGridOption(
                                 context,
@@ -270,6 +256,22 @@ class _UserScreenState extends State<UserScreen> {
                                   MaterialPageRoute(
                                     builder: (context) =>
                                         const UserPreferencesScreen(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: _buildGridOption(
+                                context,
+                                icon: Icons.calendar_month_outlined,
+                                title: 'Planificador',
+                                subtitle: 'Menú Inteligente',
+                                color: const Color(0xFFAC92EB), // Lavender
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const PlannerScreen(),
                                   ),
                                 ),
                               ),
