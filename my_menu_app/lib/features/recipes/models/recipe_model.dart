@@ -16,4 +16,27 @@ class Recipe {
     required this.calories,
     required this.ingredients,
   });
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'image_url': imageUrl,
+      'difficulty': difficulty,
+      'time': time,
+      'description': description,
+      'calories': calories,
+      'ingredients': ingredients,
+    };
+  }
+
+  factory Recipe.fromJson(Map<String, dynamic> map) {
+    return Recipe(
+      title: map['title'] ?? '',
+      imageUrl: map['image_url'] ?? '',
+      difficulty: map['difficulty'] ?? '',
+      time: map['time'] ?? '',
+      description: map['description'] ?? '',
+      calories: map['calories'] ?? '',
+      ingredients: List<String>.from(map['ingredients'] ?? []),
+    );
+  }
 }

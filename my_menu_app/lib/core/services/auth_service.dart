@@ -2,7 +2,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:io';
 
 class AuthService {
-  final SupabaseClient _supabase = Supabase.instance.client;
+  // Use a getter to access the client lazily. This prevents a crash during object instantiation
+  // if Supabase hasn't been initialized yet (or failed to initialize).
+  SupabaseClient get _supabase => Supabase.instance.client;
 
   // Stream to listen for authentication changes
   Stream<AuthState> get authStateChanges => _supabase.auth.onAuthStateChange;

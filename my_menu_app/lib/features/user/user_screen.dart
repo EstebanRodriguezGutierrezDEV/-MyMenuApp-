@@ -30,7 +30,8 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   Future<void> _fetchUserData() async {
-    setState(() => _isLoading = true);
+    // _isLoading is already true by default, no need to set state here which causes build error
+    // setState(() => _isLoading = true);
     try {
       _user = _authService.currentUser;
       if (_user != null) {
