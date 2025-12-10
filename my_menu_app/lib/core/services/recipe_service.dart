@@ -1,5 +1,6 @@
 import '../../features/recipes/models/recipe_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:io';
 
 class RecipeService {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -62,5 +63,70 @@ class RecipeService {
       'user_id': user.id,
       'created_at': DateTime.now().toIso8601String(),
     });
+  }
+
+  // Fetch Public Feed Recipes (All recipes for now)
+  Future<List<Recipe>> getFeedRecipes() async {
+    final response = await _supabase
+        .from('recipes')
+        .select()
+        .order('created_at', ascending: false);
+
+    return (response as List).map((e) => Recipe.fromJson(e)).toList();
+  }
+
+  // Toggle Like
+  Future<void> toggleLike(String recipeId) async {
+    final user = _supabase.auth.currentUser;
+    if (user == null) return;
+
+    final isLiked = await isRecipeLiked(recipeId);
+    if (isLiked) {
+      await _supabase
+          .from('likes')
+          .delete()
+          .eq('recipe_id', recipeId)
+          .eq('user_id', user.id);
+    } else {
+      await _supabase.from('likes').insert({
+        'user_id': user.id,
+        'recipe_id': recipeId,
+        'created_at': DateTime.now().toIso8601String(),
+      });
+    }
+  }
+
+  // Check if recipe is liked by current user
+  Future<bool> isRecipeLiked(String recipeId) async {
+    final user = _supabase.auth.currentUser;
+    if (user == null) return false;
+
+    final response = await _supabase
+        .from('likes')
+        .select()
+        .eq('recipe_id', recipeId)
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+    return response != null;
+  }
+
+  // Upload Recipe Image
+  Future<String?> uploadImage(File imageFile) async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) return null;
+
+      final extension = imageFile.path.split('.').last;
+      final fileName =
+          '${user.id}/${DateTime.now().millisecondsSinceEpoch}.$extension';
+
+      await _supabase.storage.from('recipes').upload(fileName, imageFile);
+
+      return _supabase.storage.from('recipes').getPublicUrl(fileName);
+    } catch (e) {
+      print('Error uploading image: $e');
+      return null;
+    }
   }
 }

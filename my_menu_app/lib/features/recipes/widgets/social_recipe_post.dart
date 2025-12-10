@@ -4,6 +4,7 @@ import '../../../core/theme/app_colors.dart';
 import '../models/recipe_model.dart';
 import 'package:provider/provider.dart';
 import '../../shopping/providers/shopping_list_provider.dart';
+import '../../../core/services/recipe_service.dart';
 
 class SocialRecipePost extends StatefulWidget {
   final Recipe recipe;
@@ -28,17 +29,45 @@ class _SocialRecipePostState extends State<SocialRecipePost> {
   late int _likes;
   bool _showIngredients = false;
 
+  final _recipeService = RecipeService(); // Add service instance
+
   @override
   void initState() {
     super.initState();
     _likes = widget.initialLikes;
+    _checkIfLiked();
   }
 
-  void _toggleLike() {
+  Future<void> _checkIfLiked() async {
+    if (widget.recipe.id == null) return;
+    final liked = await _recipeService.isRecipeLiked(widget.recipe.id!);
+    if (mounted) {
+      setState(() {
+        _isLiked = liked;
+      });
+    }
+  }
+
+  Future<void> _toggleLike() async {
+    if (widget.recipe.id == null) return;
+
+    // Optimistic UI update
     setState(() {
       _isLiked = !_isLiked;
       _likes += _isLiked ? 1 : -1;
     });
+
+    try {
+      await _recipeService.toggleLike(widget.recipe.id!);
+    } catch (e) {
+      // Revert if error
+      if (mounted) {
+        setState(() {
+          _isLiked = !_isLiked;
+          _likes += _isLiked ? 1 : -1;
+        });
+      }
+    }
   }
 
   void _toggleIngredients() {

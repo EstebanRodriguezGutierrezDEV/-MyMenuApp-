@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/services/recipe_service.dart';
 import '../recipes/models/recipe_model.dart';
+import '../recipes/upload_recipe_screen.dart';
 
 class MyRecipesScreen extends StatelessWidget {
   const MyRecipesScreen({super.key});
@@ -47,6 +48,19 @@ class MyRecipesScreen extends StatelessWidget {
             _RecipeList(type: RecipeListType.liked),
             _RecipeList(type: RecipeListType.saved),
           ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const UploadRecipeScreen(),
+              ),
+            );
+          },
+          label: const Text('Subir Receta'),
+          icon: const Icon(Icons.add),
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
         ),
       ),
     );

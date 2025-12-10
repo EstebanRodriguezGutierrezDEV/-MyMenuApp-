@@ -1,4 +1,5 @@
 class Recipe {
+  final String? id; // Database ID (null for new recipes before upload)
   final String title;
   final String imageUrl;
   final String difficulty;
@@ -8,6 +9,7 @@ class Recipe {
   final List<String> ingredients;
 
   Recipe({
+    this.id,
     required this.title,
     required this.imageUrl,
     required this.difficulty,
@@ -18,6 +20,7 @@ class Recipe {
   });
   Map<String, dynamic> toJson() {
     return {
+      if (id != null) 'id': id,
       'title': title,
       'image_url': imageUrl,
       'difficulty': difficulty,
@@ -30,6 +33,7 @@ class Recipe {
 
   factory Recipe.fromJson(Map<String, dynamic> map) {
     return Recipe(
+      id: map['id'],
       title: map['title'] ?? '',
       imageUrl: map['image_url'] ?? '',
       difficulty: map['difficulty'] ?? '',

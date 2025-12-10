@@ -5,7 +5,7 @@ import '../recipes/recipes_screen.dart';
 import '../recipes/new_recipes_screen.dart';
 import '../shopping/shopping_screen.dart';
 import '../user/user_screen.dart';
-import '../posts/add_post_screen.dart';
+import '../recipes/upload_recipe_screen.dart';
 
 class MainLayoutScreen extends StatefulWidget {
   const MainLayoutScreen({super.key});
@@ -33,7 +33,7 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddPostScreen()),
+            MaterialPageRoute(builder: (context) => const UploadRecipeScreen()),
           );
         },
         backgroundColor: AppColors.primary,
