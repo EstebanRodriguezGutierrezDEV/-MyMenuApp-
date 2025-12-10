@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'signup_screen.dart';
@@ -21,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   final _authService = AuthService();
   bool _isLoading = false;
+  bool _rememberMe = false;
 
   Future<void> _handleLogin() async {
     final email = _emailController.text.trim();
@@ -44,6 +46,11 @@ class _LoginScreenState extends State<LoginScreen> {
       debugPrint('Step 3: SignIn successful');
 
       if (mounted) {
+        if (_rememberMe) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('remember_me', true);
+        }
+
         debugPrint('Step 4: Navigating to MainLayoutScreen');
         // Navigate to MainLayoutScreen on success
         Navigator.of(context).pushAndRemoveUntil(
@@ -160,6 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 24),
 
                   // Form
+
                   // Form
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,6 +184,27 @@ class _LoginScreenState extends State<LoginScreen> {
                         label: 'Contraseña',
                         hintText: 'Ingresa tu contraseña',
                         obscureText: true,
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: _rememberMe,
+                            activeColor: AppColors.primary,
+                            onChanged: (value) {
+                              setState(() {
+                                _rememberMe = value ?? false;
+                              });
+                            },
+                          ),
+                          Text(
+                            'Recuérdame',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              color: AppColors.text,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
