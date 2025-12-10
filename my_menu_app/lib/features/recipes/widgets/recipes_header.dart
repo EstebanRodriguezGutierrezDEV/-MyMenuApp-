@@ -15,94 +15,82 @@ class RecipesHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 60, bottom: 20, left: 20, right: 20),
-      decoration: BoxDecoration(
-        color: AppColors.primary,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)],
-        ),
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.15),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+      // Decoration removed to allow parent to handle background and sticking shadow
+      child: Row(
         children: [
-          Text(
-            'Descubre Recetas Nuevas',
-            style: GoogleFonts.outfit(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+          Expanded(
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.primary.withOpacity(0.15)),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.08),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: TextField(
+                controller: searchController,
+                style: GoogleFonts.inter(
+                  fontSize: 15,
+                  color: const Color(0xFF1A313A),
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: InputDecoration(
+                  hintText: '¿Qué se te antoja hoy?',
+                  hintStyle: GoogleFonts.inter(
+                    color: Colors.grey.withOpacity(0.6),
+                    fontSize: 14,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.search_rounded,
+                    color: AppColors.primary.withOpacity(0.7),
+                    size: 24,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                ),
+              ),
             ),
           ),
-          const SizedBox(height: 16),
-          // Search & Filter Row
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: TextField(
-                    controller: searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Buscar recetas...',
-                      hintStyle: GoogleFonts.inter(
-                        color: Colors.grey.withOpacity(0.8),
-                        fontSize: 14,
-                      ),
-                      prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
-                      ),
-                    ),
-                  ),
+          const SizedBox(width: 14),
+          GestureDetector(
+            onTap: onFilterTap,
+            child: Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.primary,
+                    AppColors.primary.withOpacity(0.8),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-              ),
-              const SizedBox(width: 12),
-              GestureDetector(
-                onTap: onFilterTap,
-                child: Container(
-                  height: 45,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(25),
-                    border: Border.all(color: Colors.white.withOpacity(0.3)),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
                   ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.tune, color: Colors.white, size: 20),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Filtros',
-                        style: GoogleFonts.inter(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                ],
               ),
-            ],
+              child: const Icon(
+                Icons.tune_rounded,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
           ),
         ],
       ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../recipes/recipes_screen.dart';
-import '../recipes/new_recipes_screen.dart';
 import '../shopping/shopping_screen.dart';
 import '../user/user_screen.dart';
 import '../recipes/upload_recipe_screen.dart';
@@ -19,7 +18,6 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
 
   final List<Widget> _screens = [
     const RecipesScreen(),
-    const NewRecipesScreen(),
     const SizedBox(), // Dummy widget for the Add button
     const ShoppingScreen(),
     const UserScreen(),
@@ -56,11 +54,17 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (index) {
-            // Index 2 is the space for FAB, so we don't switch to it
-            if (index != 2) {
-              setState(() {
-                _currentIndex = index;
-              });
+            // Index 1 is the space for FAB, so we don't switch to it
+            // Adjust index logic for removed item
+            if (index == 2) {
+              // Compra
+              setState(() => _currentIndex = 2);
+            } else if (index == 3) {
+              // Mi Cuenta
+              setState(() => _currentIndex = 3);
+            } else if (index == 0) {
+              // Recetas
+              setState(() => _currentIndex = 0);
             }
           },
           type: BottomNavigationBarType.fixed,
@@ -82,11 +86,6 @@ class _MainLayoutScreenState extends State<MainLayoutScreen> {
               icon: Icon(Icons.book_outlined),
               activeIcon: Icon(Icons.book),
               label: 'Recetas',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.explore_outlined),
-              activeIcon: Icon(Icons.explore),
-              label: 'Nuevas',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.add, color: Colors.transparent),
